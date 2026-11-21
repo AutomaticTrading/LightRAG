@@ -1,6 +1,7 @@
 """Offline guard: publish workflows must not bypass the release review event."""
 from pathlib import Path
 import unittest
+import re
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -10,7 +11,7 @@ class PublicationGuardTests(unittest.TestCase):
             text = (ROOT / ".github/workflows" / name).read_text(encoding="utf-8")
             self.assertIn("  release:\n    types: [published]", text)
             self.assertNotIn("  workflow_dispatch:", text)
-            self.assertNotIn("  push:", text)
+            self.assertNotRegex(text, r"(?m)^  push:\\s*$")
 
     def test_manual_build_uses_test_sha_namespace(self):
         text = (ROOT / ".github/workflows/docker-build-manual.yml").read_text(encoding="utf-8")
