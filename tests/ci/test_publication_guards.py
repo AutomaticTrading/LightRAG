@@ -1,7 +1,9 @@
 """Offline guard: publish workflows must not bypass the release review event."""
 from pathlib import Path
 import unittest
-import re
+import pytest
+
+pytestmark = pytest.mark.offline
 
 ROOT = Path(__file__).resolve().parents[2]
 
