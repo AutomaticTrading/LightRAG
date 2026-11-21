@@ -11,7 +11,7 @@ class PublicationGuardTests(unittest.TestCase):
             text = (ROOT / ".github/workflows" / name).read_text(encoding="utf-8")
             self.assertIn("  release:\n    types: [published]", text)
             self.assertNotIn("  workflow_dispatch:", text)
-            self.assertNotRegex(text, r"(?m)^  push:\\s*$")
+            self.assertNotRegex(text, r"(?m)^  push:\s*$")
 
     def test_manual_build_uses_test_sha_namespace(self):
         text = (ROOT / ".github/workflows/docker-build-manual.yml").read_text(encoding="utf-8")
