@@ -32,9 +32,7 @@ class PublicationGuardTests(unittest.TestCase):
             'TEST_IMAGE_TAG="test-sha-$(git rev-parse --short=12 HEAD)"', text
         )
         self.assertIn('echo "image_tag=$TEST_IMAGE_TAG" >> $GITHUB_OUTPUT', text)
-        self.assertIn(
-            "type=raw,value=${{ steps.get_tag.outputs.image_tag }}", text
-        )
+        self.assertIn("type=raw,value=${{ steps.get_tag.outputs.image_tag }}", text)
         self.assertNotIn("type=raw,value=${{ steps.get_tag.outputs.tag }}", text)
         self.assertIn(
             "ghcr.io/${{ github.repository }}:${{ steps.get_tag.outputs.image_tag }}",
