@@ -1,9 +1,14 @@
 """Offline guard: publish workflows must not bypass the release review event."""
 from pathlib import Path
 import unittest
-import pytest
-
-pytestmark = pytest.mark.offline
+# Keep dependency-free unittest CI, while marking collected tests for the
+# repository's strict pytest gate when pytest is installed.
+try:
+    import pytest
+except ImportError:
+    pytest = None
+if pytest is not None:
+    pytestmark = pytest.mark.offline
 
 ROOT = Path(__file__).resolve().parents[2]
 
