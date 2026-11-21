@@ -14,7 +14,7 @@ were triggered by **either** `release.published` **or** `workflow_dispatch`. In 
 
 Remove only `workflow_dispatch` from those two production artifact-publication workflows. They may now run when a GitHub Release is **published**.
 
-Preserve `.github/workflows/docker-build-manual.yml` unchanged. That remains a separate **manually triggered test image** flow and can also publish to GHCR; whether its label/repository privileges are suitably isolated needs independent review. This PR does **not** claim all ad-hoc package publication is impossible.
+Keep `.github/workflows/docker-build-manual.yml` as a **manually triggered test-image** path, but change its GHCR tag to `test-sha-<12-char-commit>` instead of the latest release tag. This reduces the risk that a manually built test image overwrites a production release tag. The workflow still has package publication capabilities and is not a substitute for approval. The source version field remains derived from the latest tag; verify independently that builds from a source commit are accurately provenance-bound. This PR does **not** claim all ad-hoc package publication is impossible.
 
 No code, package contents, Dockerfiles, dependencies, versioning logic, image tags, signatures or credentials changed.
 
@@ -31,7 +31,7 @@ No code, package contents, Dockerfiles, dependencies, versioning logic, image ta
 In this proposed branch:
 - `pypi-publish.yml`: `release.published` retained, `workflow_dispatch` absent.
 - `docker-publish.yml`: `release.published` retained, `workflow_dispatch` absent.
-- `docker-build-manual.yml` content and trigger unchanged.
+- `docker-build-manual.yml` retains the manual trigger, but its image tag is segregated into the `test-sha-` namespace.
 
 ## Related conflicts
 
