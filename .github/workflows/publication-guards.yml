@@ -1,0 +1,24 @@
+name: Publication trigger regression
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/docker-publish.yml"
+      - ".github/workflows/pypi-publish.yml"
+      - ".github/workflows/docker-build-manual.yml"
+      - "tests/ci/test_publication_guards.py"
+      - ".github/workflows/publication-guards.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  offline-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Run offline publication guards
+        run: python -m unittest discover -s tests/ci -p 'test_publication_guards.py' -v

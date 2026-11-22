@@ -40,8 +40,10 @@ jobs:
             echo "Latest tag found: $LATEST_TAG"
           fi
           PACKAGE_VERSION="${LATEST_TAG#v}"
+          # Test builds must not overwrite the immutable release tag namespace.
+          TEST_IMAGE_TAG="test-sha-$(git rev-parse --short=12 HEAD)"
           echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
-          echo "image_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "image_tag=$TEST_IMAGE_TAG" >> $GITHUB_OUTPUT
           echo "package_version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
 
       - name: Update version definitions
@@ -69,7 +71,7 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
-            type=raw,value=${{ steps.get_tag.outputs.tag }}
+            type=raw,value=${{ steps.get_tag.outputs.image_tag }}
 
       - name: Build and push Docker image
         id: build-and-push
@@ -104,6 +106,6 @@ jobs:
         run: |
           echo "Docker image built and pushed successfully!"
           echo "Image tags:"
-          echo "  - ghcr.io/${{ github.repository }}:${{ steps.get_tag.outputs.tag }}"
+          echo "  - ghcr.io/${{ github.repository }}:${{ steps.get_tag.outputs.image_tag }}"
           echo "Signed manifest digest: ${{ steps.build-and-push.outputs.digest }}"
           echo "Latest Git tag used: ${{ steps.get_tag.outputs.tag }}"
